@@ -18,14 +18,19 @@ def build(source,output,*,replace=False,present_skill=None,node=None,previews=No
     css='''
     .lesson-actions {font-size:23px;line-height:1.65;margin:0;padding-left:27px;}
     .lesson-actions li {margin-bottom:18px;padding-left:6px;}
-    .lesson-prompt {font-size:22px;line-height:1.65;white-space:pre-wrap;overflow-wrap:anywhere;}
-    .lesson-label {color:var(--blue-deep);font-size:20px;font-weight:700;margin:0 0 12px;}
+    .lesson-card {background:var(--bg-dark);color:var(--on-dark);border-left:7px solid var(--blue);border-radius:0 12px 12px 0;padding:22px 26px 24px;box-sizing:border-box;}
+    .lesson-card-head {display:flex;align-items:center;gap:14px;margin-bottom:17px;}
+    .lesson-label {display:inline-block;background:var(--blue);color:#fff;font-size:17px;font-weight:700;padding:5px 11px;border-radius:4px;white-space:nowrap;}
+    .lesson-recipient {color:var(--on-dark-2);font-size:17px;line-height:1.45;}
+    .lesson-prompt {font-size:22px;line-height:1.65;white-space:pre-wrap;overflow-wrap:anywhere;color:var(--on-dark);}
+    .lesson-card.compact {margin-top:18px;padding:16px 22px 18px;}
+    .lesson-card.compact .lesson-card-head {margin-bottom:10px;}
+    .lesson-card.compact .lesson-prompt {font-size:19px;line-height:1.55;}
     .lesson-complete {font-size:20px;line-height:1.6;margin-top:16px;padding:14px 18px;background:var(--tint);}
     .lesson-links {font-size:16px;line-height:1.6;margin-top:12px;}
     .lesson-links a {color:var(--blue-deep);margin-right:25px;}
-    .lesson-table td,.lesson-table th {font-size:20px;line-height:1.55;padding:12px 16px;}
+    .lesson-table td,.lesson-table th {font-size:20px;line-height:1.55;padding:10px 16px;}
     .lesson-table {margin:0;}
-    .lesson-short {font-size:20px;line-height:1.6;}
     '''
     d=module.Deck(tenant=data.get('audience','課程教材'),app=data.get('app','學習版'),purposes=['操作說明'],
                   title=data['title'],version='v'+version,made=data.get('made','2026-10-27'),extra_css=css)
@@ -48,12 +53,14 @@ def build(source,output,*,replace=False,present_skill=None,node=None,previews=No
             d.divider(page['part'],'PART '+label,title or label,'依順序前進，完成一個小成果再進下一步。')
             previous=page['part']
         if not page.get('prompt') or not page.get('success'): raise ValueError('每個情景需提示詞與完成條件')
+        recipient=page.get('prompt_label',data.get('prompt_label','學生貼給自己的 AI'))
+        card_class='lesson-card compact' if page.get('table') else 'lesson-card'
+        prompt='<div class="'+card_class+'"><div class="lesson-card-head"><span class="lesson-label">範例提示詞</span><span class="lesson-recipient">'+escape(recipient)+'</span></div><div class="lesson-prompt">'+escape(page['prompt'])+'</div></div>'
         if page.get('table'):
             rows=page['table']; body=d.table(rows[0],rows[1:],cls='compact lesson-table')
-            body+='<div class="lesson-short"><b>範例提示詞：</b>'+escape(page['prompt']).replace('\n','<br>')+'</div>'
+            body+=prompt
         else:
             actions='<ol class="lesson-actions">'+''.join('<li>'+escape(row)+'</li>' for row in page['steps'])+'</ol>'
-            prompt='<div class="lesson-label">可直接貼給 AI</div><div class="lesson-prompt">'+escape(page['prompt'])+'</div>'
             body=d.row(d.col(actions,650),d.col(prompt,700))
         body+='<div class="lesson-complete"><b>完成後應看到：</b>'+escape(page['success'])+'</div>'
         if page.get('links'):

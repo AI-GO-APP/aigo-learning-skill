@@ -1,6 +1,6 @@
 {
   "title": "學習版操作手冊",
-  "version": "0.3.0",
+  "version": "0.3.1",
   "format": "AI GO B2B 1600x900",
   "app": "AI GO 學習版",
   "audience": "課程學員",
@@ -553,5 +553,6 @@
       "Codex 方案",
       "https://learn.chatgpt.com/docs/pricing"
     ]
-  ]
+  ],
+  "prompt_label": "學生貼給自己的 AI"
 }
