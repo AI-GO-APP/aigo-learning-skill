@@ -41,12 +41,16 @@ def vendor(source, ref, note):
     commit = subprocess.check_output(["git", "rev-parse", "--verify", f"{ref}^{{commit}}"], cwd=source).decode().strip()
     def read(name):
         return subprocess.check_output(["git", "show", f"{commit}:{name}"], cwd=source)
-    inputs = {"VERSION": read("VERSION"), "references/custom-app-dev-guide.md": read("references/custom-app-dev-guide.md")}
+    inputs = {"VERSION": read("VERSION"), "references/custom-app-dev-guide.md": read("references/custom-app-dev-guide.md"),
+              'references/hosted-apps.md':read('references/hosted-apps.md')}
     inputs.update({f"scripts/{name}": read(f"scripts/{name}") for name in CORE_TOOLS})
     available = sections(inputs["references/custom-app-dev-guide.md"].decode("utf-8"))
+    hosted=sections(inputs['references/hosted-apps.md'].decode('utf-8'))
+    excerpts={**EXCERPTS,'hosted-apps.md':[name for name in hosted if re.match(r'## (?:[1-8]|10)\.',name)]}
     outputs = {name: content for name,content in inputs.items() if name.startswith("scripts/")}
-    for name, headings in EXCERPTS.items():
-        body = "\n".join(available[heading] for heading in headings)
+    for name, headings in excerpts.items():
+        selected=hosted if name=='hosted-apps.md' else available
+        body = "\n".join(selected[heading] for heading in headings)
         body = re.sub(r"(?:references/)?([A-Za-z][A-Za-z0-9_-]*)\.md", lambda m:f"教師補充〈{m[1]}〉（未附帶；本題需要時請教師核對）", body)
         body = re.sub(r"(?:scripts/)?((?:aigo_[a-z_]+|check_update|report_issue)\.py)",
                       lambda m:m[0] if m[1] in CORE_TOOLS else f"教師補充工具〈{m[1][:-3]}〉（未附帶）", body)

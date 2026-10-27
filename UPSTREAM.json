@@ -2,11 +2,12 @@
   "repository": "AI-GO-APP/aigo-app-builder-skill",
   "commit": "bd5317c6c7fea0485bc6ccd42ce4d307a94a1c80",
   "version": "1.72.0",
-  "review_note": "固定 Builder 1.72.0；僅取 Custom App 技術工具與指定章節，不取一般版入口、管理或提報流程。",
+  "review_note": "學習版 0.3.0：保留固定工具，審核 Hosted 基礎形態、部署、引用、公開與持久化；不載入一般版入口。",
   "policy": "pinned-reviewed-vendor",
   "source_hashes": {
     "VERSION": "872bafa7f46c23bfe8885cb453e5f88ae13bf84b71654ffb35a94ce4b07ab8b6",
     "references/custom-app-dev-guide.md": "ba105a773e4a9bdbc961f433217f6d42027fbf03fb134f1bb828369034a5b18c",
+    "references/hosted-apps.md": "dd8805b09bacc57a73ac181d43cee5425f7ad1c36c1048191b4689e2af13979b",
     "scripts/aigo_auth.py": "6a3b5deb173b8493e666522d0bf986b069c26c4464e77bfb7a1ecec643de0c2e",
     "scripts/aigo_cli_check.py": "6da6d188983ef07e70533e4dcd8e3fb0a1aa33da49e75f4086489506ad4667e9",
     "scripts/aigo_limits.py": "3db815fbababdbb13bdfbbeb6c02f669369df7b4ce78191adf2db2713b07b8dd",
@@ -33,6 +34,7 @@
     "technical/actions.md": "5e68ae52714f950b90566f1bf11261fe2dde9ac7ea24e587ad931ad3faaa48b3",
     "technical/data-placement.md": "0de20eb34663da734c87fad2325778679a206bac7f18b7fd98394f169fee254f",
     "technical/data-references.md": "eeea8fb2bce70a7cb0151d0ff1a6aa5d3364ab94b6dfec04c222070593e5823d",
-    "technical/frontend-states.md": "b99843916fca8d0d5d4612af0d8d3f30a1f17176d24475a76f10ed81b9644a9e"
+    "technical/frontend-states.md": "b99843916fca8d0d5d4612af0d8d3f30a1f17176d24475a76f10ed81b9644a9e",
+    "technical/hosted-apps.md": "44d6f39f5a90147c25d75bc8c1479c24804987710b57677d7e70736b71ed0a7a"
   }
 }

@@ -1,115 +1,80 @@
-"""A4 landscape, flat presentation typography; editable source in docs/handbook.json."""
+"""Maintain PDFs with the installed ai-go-app-present AI GO B2B master."""
 from __future__ import annotations
-
-import argparse
-import io
-import json
-import re
+import argparse, hashlib, importlib.util, json, os, re, shutil, subprocess
 from pathlib import Path
-from xml.sax.saxutils import escape
+from html import escape
+ROOT=Path(__file__).resolve().parents[1]
 
-ROOT = Path(__file__).resolve().parents[1]
-
-
-def build(source: Path, output: Path, *, replace=False) -> dict:
-    from reportlab.lib import colors
-    from reportlab.lib.pagesizes import A4, landscape
-    from reportlab.lib.styles import ParagraphStyle
-    from reportlab.pdfbase import pdfmetrics
-    from reportlab.pdfbase.ttfonts import TTFont
-    from reportlab.pdfgen.canvas import Canvas
-    from reportlab.platypus import Paragraph
+def build(source,output,*,replace=False,present_skill=None,node=None,previews=None):
     from pypdf import PdfReader
-    data = json.loads(source.read_text(encoding="utf-8"))
-    version = (ROOT / "VERSION").read_text(encoding="utf-8").strip()
-    if data["version"] != version:
-        raise ValueError("教材版本與技能不一致")
-    if output.exists() and not replace:
-        raise FileExistsError(output)
-    font_root = Path("C:/Windows/Fonts")
-    regular, bold = font_root / "msjh.ttc", font_root / "msjhbd.ttc"
-    if not regular.is_file() or not bold.is_file():
-        raise ValueError("教學指南建置需要可嵌入的繁體字型 msjh.ttc / msjhbd.ttc；可在本機建置後交付已驗證 PDF")
-    pdfmetrics.registerFont(TTFont("Guide", str(regular), subfontIndex=0))
-    pdfmetrics.registerFont(TTFont("GuideBold", str(bold), subfontIndex=0))
-    navy, orange, ink, muted = [colors.HexColor(x) for x in ("#17313E", "#AD4C1C", "#263B46", "#566872")]
-    width, height = landscape(A4)
-    styles = {
-        "title": ParagraphStyle("title", fontName="GuideBold", fontSize=32, leading=42, textColor=navy, wordWrap="CJK"),
-        "body": ParagraphStyle("body", fontName="Guide", fontSize=17, leading=26, textColor=ink, wordWrap="CJK"),
-        "prompt": ParagraphStyle("prompt", fontName="Guide", fontSize=17, leading=26, textColor=navy, wordWrap="CJK"),
-        "intro": ParagraphStyle("intro", fontName="Guide", fontSize=17, leading=26, textColor=muted, wordWrap="CJK"),
-        "label": ParagraphStyle("label", fontName="GuideBold", fontSize=17, leading=26, textColor=orange, wordWrap="CJK"),
-        "tree": ParagraphStyle("tree", fontName="Guide", fontSize=12, leading=17, textColor=muted, wordWrap="CJK"),
-    }
-    stream = io.BytesIO()
-    canvas = Canvas(stream, pagesize=(width, height), invariant=1, pageCompression=1)
-    canvas.setTitle(data["title"])
-    canvas.setAuthor("AI GO")
-    checks = []
+    data=json.loads(source.read_text(encoding='utf-8'))
+    version=(ROOT/'VERSION').read_text().strip()
+    if data['version']!=version: raise ValueError('文件與學習版版本不一致')
+    if output.exists() and not replace: raise FileExistsError(output)
+    master=Path(present_skill or os.environ.get('AIGO_PRESENT_SKILL',str(ROOT.parent/'FDE ai go app present skill')))
+    if not (master/'scripts/deck_kit.py').is_file(): raise ValueError('需指定本機 ai-go-app-present 母版；不能用其他樣式替代')
+    spec=importlib.util.spec_from_file_location('present_master',master/'scripts/deck_kit.py')
+    module=importlib.util.module_from_spec(spec); spec.loader.exec_module(module)
+    css='''
+    .lesson-actions {font-size:23px;line-height:1.65;margin:0;padding-left:27px;}
+    .lesson-actions li {margin-bottom:18px;padding-left:6px;}
+    .lesson-prompt {font-size:22px;line-height:1.65;white-space:pre-wrap;overflow-wrap:anywhere;}
+    .lesson-label {color:var(--blue-deep);font-size:20px;font-weight:700;margin:0 0 12px;}
+    .lesson-complete {font-size:20px;line-height:1.6;margin-top:16px;padding:14px 18px;background:var(--tint);}
+    .lesson-links {font-size:16px;line-height:1.6;margin-top:12px;}
+    .lesson-links a {color:var(--blue-deep);margin-right:25px;}
+    .lesson-table td,.lesson-table th {font-size:20px;line-height:1.55;padding:12px 16px;}
+    .lesson-table {margin:0;}
+    .lesson-short {font-size:20px;line-height:1.6;}
+    '''
+    d=module.Deck(tenant=data.get('audience','課程教材'),app=data.get('app','學習版'),purposes=['操作說明'],
+                  title=data['title'],version='v'+version,made=data.get('made','2026-10-27'),extra_css=css)
+    d.cover(data.get('subtitle','從第一次對話，到內部系統與對外網站。'),meta=[('對象',data.get('audience','課程學員'))])
+    d.slides[-1]['raw']=d.slides[-1]['raw'].replace('<span>租戶</span>','<span>用途</span>').replace('<span>App</span>','<span>文件</span>')
+    d.slides[-1]['raw']=d.slides[-1]['raw'].replace('<span>用途</span>'+data.get('audience','課程教材'),'<span>用途</span>操作說明')
+    hero='''<div class="shot framed" style="width:690px"><div class="bar"><i></i><i></i><i></i><span>教材路徑示意（非產品畫面）</span></div>
+    <div style="padding:46px 38px;color:var(--on-dark);font-size:24px;line-height:1.7;">
+    <div style="color:var(--on-dark-2);font-size:18px;">AI GO 學習版</div><h2 style="margin:18px 0 32px;">一個情境，兩個作品</h2>
+    <div style="border-left:3px solid var(--blue);padding-left:22px;margin:25px 0;"><b>客人的對外網站</b><br><span style="color:var(--on-dark-2)">瀏覽服務 → 送出申請</span></div>
+    <div style="font-size:30px;color:var(--blue);margin:12px 0;">↓</div>
+    <div style="border-left:3px solid var(--blue);padding-left:22px;margin:25px 0;"><b>自己的內部系統</b><br><span style="color:var(--on-dark-2)">收到申請 → 確認與跟進</span></div>
+    <div style="font-size:18px;color:var(--on-dark-2);margin-top:32px;">先確認、再實作；成果與理解分開驗收。</div></div></div>'''
+    d.slides[-1]['raw']=d.slides[-1]['raw'].replace('<div class="cv-r"></div>','<div class="cv-r">'+hero+'</div>')
+    d.toc(howto=False)
+    previous=None
+    for page in data['pages']:
+        if page['part']!=previous:
+            label,_,title=page['part'].partition(' ')
+            d.divider(page['part'],'PART '+label,title or label,'依順序前進，完成一個小成果再進下一步。')
+            previous=page['part']
+        if not page.get('prompt') or not page.get('success'): raise ValueError('每個情景需提示詞與完成條件')
+        if page.get('table'):
+            rows=page['table']; body=d.table(rows[0],rows[1:],cls='compact lesson-table')
+            body+='<div class="lesson-short"><b>範例提示詞：</b>'+escape(page['prompt']).replace('\n','<br>')+'</div>'
+        else:
+            actions='<ol class="lesson-actions">'+''.join('<li>'+escape(row)+'</li>' for row in page['steps'])+'</ol>'
+            prompt='<div class="lesson-label">可直接貼給 AI</div><div class="lesson-prompt">'+escape(page['prompt'])+'</div>'
+            body=d.row(d.col(actions,650),d.col(prompt,700))
+        body+='<div class="lesson-complete"><b>完成後應看到：</b>'+escape(page['success'])+'</div>'
+        if page.get('links'):
+            body+='<div class="lesson-links">'+''.join('<a href="'+escape(url,quote=True)+'">'+escape(label)+' ↗</a>' for label,url in page['links'])+'</div>'
+        d.slide(page['part'],page['title'],page['intro'],body,kicker='AI GO · '+page['part'])
+    d.back_cover('從一個小成果開始',data.get('closing','先確認、再實作；做得到，也說得清楚。'),contact=['課程問題請洽助教'])
+    output.parent.mkdir(parents=True,exist_ok=True); html=source.with_suffix('.html'); d.write(html)
+    text=re.sub(r'<link[^>]+(?:fonts.googleapis.com|fonts.gstatic.com)[^>]*>','',html.read_text(encoding='utf-8'))
+    html.write_text(text,encoding='utf-8',newline='\n')
+    cmd=[str(node or shutil.which('node') or 'node'),str(master/'scripts/render.mjs'),'--html',str(html),'--pdf',str(output)]
+    if previews: cmd+=['--png',str(previews)]
+    subprocess.run(cmd,check=True)
+    count=len(PdfReader(output).pages)
+    if count!=len(d._layout()) or output.stat().st_size>20*1024*1024: raise ValueError('頁數或檔案大小不符')
+    data['rendered_pages']=count; source.write_text(json.dumps(data,ensure_ascii=False,indent=2)+'\n',encoding='utf-8',newline='\n')
+    return {'pages':count,'version':version,'master':'ai-go-app-present / AI GO B2B 1600x900',
+            'master_version':(master/'VERSION').read_text().strip(),
+            'master_css_sha256':hashlib.sha256((master/'scripts/deck.css').read_bytes()).hexdigest(),'visual_review':'pending'}
 
-    body_bottom = 112
-    def draw(text, x, top, w, kind="body", bottom=None):
-        bottom = body_bottom if bottom is None else bottom
-        markup = escape(text).replace("\n", "<br/>")
-        markup = re.sub(r"(?:\.[A-Za-z][\w-]*/|[A-Za-z][\w-]*/)[A-Za-z0-9_./-]+", r"<nobr>\g<0></nobr>", markup)
-        markup = markup.replace("AI GO", "<nobr>AI GO</nobr>")
-        paragraph = Paragraph(markup, styles[kind])
-        _, h = paragraph.wrap(w, height)
-        if top - h < bottom:
-            raise ValueError(f"第 {len(checks)+1} 頁文字超出區域：{text[:32]} ({top-h:.1f} < {bottom})")
-        paragraph.drawOn(canvas, x, top - h)
-        return top - h
-
-    for index, page in enumerate(data["pages"], 1):
-        body_bottom = 134 if page.get("links") else 112
-        if not page.get("prompt"):
-            raise ValueError(f"每個 AI 操作頁都需有範例提示詞：{index}")
-        canvas.setFillColor(orange)
-        canvas.setFont("GuideBold", 14)
-        canvas.drawString(46, height - 33, f"STEP {page['step']}  /  AI GO 學員指南")
-        top = draw(page["title"], 46, height - 49, width - 92, "title")
-        top = draw(page["intro"], 46, top - 12, width - 92, "intro") - 23
-        x_left, x_right = 46, 426
-        w_left, w_right = 338, width - 472
-        left = draw("你要做的事", x_left, top, w_left, "label") - 9
-        for n, text in enumerate(page["steps"], 1):
-            left = draw(f"{n}. {text}", x_left, left, w_left) - 13
-        right = draw("貼給 AI 的範例提示詞", x_right, top, w_right, "label") - 9
-        right = draw(page["prompt"], x_right, right, w_right, "prompt")
-        # Folder structure is supporting evidence; a short block can sit below the prompt.
-        if page.get("tree"):
-            right = draw("\n".join(page["tree"]), x_right, right - 18, w_right, "tree")
-        bottom_text = "完成後應看到：" + page["success"]
-        draw(bottom_text, 46, 83, width - 92, "intro", bottom=28)
-        canvas.setFont("Guide", 9)
-        canvas.setFillColor(muted)
-        canvas.drawString(46, 17, f"aigo-learning v{version}  |  規則：{' / '.join(page['rules'])}")
-        canvas.drawRightString(width - 46, 17, f"{index} / {len(data['pages'])}")
-        for n, (label, url) in enumerate(page.get("links", [])):
-            # The source link is a footnote, separate from the main 17pt teaching content.
-            label = label + " ↗"
-            x = 46 + n * 220
-            canvas.setFont("Guide", 10)
-            canvas.drawString(x, 105, label)
-            canvas.linkURL(url, (x, 103, x + pdfmetrics.stringWidth(label, "Guide", 10), 117), relative=0)
-        checks.append({"page": index, "step": page["step"], "left_bottom": round(left, 2), "right_bottom": round(right, 2)})
-        canvas.showPage()
-    canvas.save()
-    content = stream.getvalue()
-    reader = PdfReader(io.BytesIO(content))
-    if len(reader.pages) != len(data["pages"]):
-        raise ValueError("PDF 頁數不符")
-    output.parent.mkdir(parents=True, exist_ok=True)
-    output.write_bytes(content)
-    return {"pages": len(reader.pages), "version": version, "layout": "A4 landscape, presentation style", "geometry": checks,
-            "visual_review": "pending"}
-
-
-if __name__ == "__main__":
-    parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument("--source", type=Path, default=ROOT / "docs/handbook.json")
-    parser.add_argument("--output", type=Path, default=ROOT / "assets/student-handbook.pdf")
-    parser.add_argument("--replace", action="store_true")
-    args = parser.parse_args()
-    print(json.dumps(build(args.source, args.output, replace=args.replace), ensure_ascii=False))
+if __name__=='__main__':
+    p=argparse.ArgumentParser(description=__doc__)
+    p.add_argument('--source',type=Path,default=ROOT/'docs/handbook.json'); p.add_argument('--output',type=Path,default=ROOT/'assets/student-handbook.pdf')
+    p.add_argument('--present-skill',type=Path); p.add_argument('--node',type=Path); p.add_argument('--previews',type=Path); p.add_argument('--replace',action='store_true')
+    a=p.parse_args(); print(json.dumps(build(a.source,a.output,replace=a.replace,present_skill=a.present_skill,node=a.node,previews=a.previews),ensure_ascii=False))

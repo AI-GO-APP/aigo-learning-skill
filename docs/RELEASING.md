@@ -7,7 +7,7 @@ Builder 為獨立上游，只取固定 commit 的工具與技術摘錄，保留 
 ## 發版順序
 
 1. 更新 VERSION。技能、PDF 及 release 都使用相同版本。教學規則、提示詞與教材來源在同一 commit 檢視。
-2. `python tools/build_handbook.py` 建 PDF；渲染後逐頁目視，檢查字、提示詞、順序與規則是否完整。
+2. `python tools/build_handbook.py --present-skill <本機 ai-go-app-present 路徑>` 以實際 AI GO B2B 母版建 PDF；渲染後逐頁目視，檢查字、提示詞、順序與規則是否完整。維護者本機需 Node／Chrome 及該工具相依；學生安裝不需私有 present 工具。文件來源會記錄實際頁數供打包核對。
 3. `python tools/build_release.py --output <新的輸出資料夾>` 更新 PACKAGE.json，產生學生 ZIP、PDF、SHA256SUMS 與 RELEASE.json。
 4. 測試離線完整性、更新失敗復原、路徑安全、工作區保留、提示詞及 PDF 頁面；用最終 ZIP 解壓再驗證。
 5. commit／push，確認公開內容沒有憑證或個人設定。GitHub main 的 PACKAGE 必須與來源一致，否則更新器會中止。

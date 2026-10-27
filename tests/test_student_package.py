@@ -210,15 +210,19 @@ class ContentAndReleaseTests(unittest.TestCase):
     def test_all_pages_have_prompt_and_order_is_from_setup_to_acceptance(self):
         book=json.loads((ROOT/'docs/handbook.json').read_text(encoding='utf-8'))
         self.assertEqual(book['version'],(ROOT/'VERSION').read_text().strip())
-        self.assertEqual([p['step'] for p in book['pages'][:6]],['00','01','02A','02B','03','04'])
         self.assertTrue(all(p['prompt'].strip() and p['success'].strip() for p in book['pages']))
-        self.assertEqual(len(book['pages']),19)
+        parts=[p['part'] for p in book['pages']]
+        self.assertLess(parts.index('A 課前準備'),parts.index('C 對外網站'))
+        self.assertGreater(parts.index('F 常見問題'),parts.index('D 驗收與交付'))
+        self.assertEqual(len([p for p in parts if p=='E 六階段課綱']),3)
+        self.assertGreater(book['rendered_pages'],len(book['pages']))
 
     def test_rules_and_terminology_present(self):
         rules=(ROOT/'references/student-rules.md').read_text(encoding='utf-8')
-        for number in range(1,22): self.assertIn(f'R{number:02d} ',rules)
+        for number in range(1,26): self.assertIn(f'R{number:02d} ',rules)
         for path in [ROOT/'SKILL.md',*(ROOT/'references').glob('*.md'),ROOT/'docs/handbook.json']:
             text=path.read_text(encoding='utf-8'); self.assertNotIn('內勤',text,path.name); self.assertNotIn('窗口',text,path.name)
+            for obsolete in ('普通模式','一般模式','學習模式','學生版','投資 Agent'): self.assertNotIn(obsolete,text,path.name)
         self.assertIn('建立後立即',rules); self.assertIn('不編譯或發布',rules)
 
     def test_upstream_files_are_exact_pinned_bytes(self):
