@@ -1,6 +1,6 @@
 {
   "title": "AI GO 學員操作指南",
-  "version": "0.2.0",
+  "version": "0.2.1",
   "format": "A4 landscape presentation-style",
   "pages": [
     {
@@ -64,11 +64,11 @@
       "title": "在 Claude Code 安裝技能",
       "intro": "用 Claude Code 開啟 AI-GO-Learning。安裝範圍選這個專案，完整保留 ZIP 的內容。",
       "steps": [
-        "下載同版學生 ZIP；本版檔名為 aigo-learning-0.2.0.zip。",
+        "下載同版學生 ZIP；本版檔名為 aigo-learning-0.2.1.zip。",
         "在 Claude Code 選取／開啟 AI-GO-Learning，確認目前路徑；把右側提示詞貼進對話。",
         "安裝後開新對話，輸入 /aigo-learning。若已有一般版 Builder，先查清楚並處理同時啟用問題。"
       ],
-      "prompt": "請把目前資料夾的 aigo-learning-0.2.0.zip 完整解壓到 .claude/skills/。入口必須是：\n.claude/skills/aigo-learning/SKILL.md\n若已存在先停止，不覆蓋。檢查版本、完整性與 aigo-builder 是否同時啟用；不改全域設定，不登入平台。",
+      "prompt": "請把目前資料夾的 aigo-learning-0.2.1.zip 完整解壓到 .claude/skills/。入口必須是：\n.claude/skills/aigo-learning/SKILL.md\n若已存在先停止，不覆蓋。檢查版本、完整性與 aigo-builder 是否同時啟用；不改全域設定，不登入平台。",
       "success": "新對話能找到 /aigo-learning；安裝位置、版本與完整性有可核對結果。",
       "rules": [
         "R01",
@@ -78,7 +78,7 @@
       "links": [
         [
           "本版下載",
-          "https://github.com/AI-GO-APP/aigo-learning-skill/releases/tag/v0.2.0"
+          "https://github.com/AI-GO-APP/aigo-learning-skill/releases/tag/v0.2.1"
         ],
         [
           "Claude Code 技能路徑",
@@ -95,7 +95,7 @@
         "將右側提示詞貼進新對話。完整解壓後，入口檔應直接位於指定位置，不能多套一層資料夾。",
         "開新對話輸入 $aigo-learning；未出現時重新載入專案／工具，再檢查有效技能清單。"
       ],
-      "prompt": "請把目前專案的 aigo-learning-0.2.0.zip 完整解壓到 .agents/skills/。入口必須是：\n.agents/skills/aigo-learning/SKILL.md\n若已存在先停止，不覆蓋。檢查版本、完整性與 aigo-builder 是否同時啟用；不改全域設定，不登入平台。",
+      "prompt": "請把目前專案的 aigo-learning-0.2.1.zip 完整解壓到 .agents/skills/。入口必須是：\n.agents/skills/aigo-learning/SKILL.md\n若已存在先停止，不覆蓋。檢查版本、完整性與 aigo-builder 是否同時啟用；不改全域設定，不登入平台。",
       "success": "新對話能找到 $aigo-learning；開啟的是練習資料夾，沒有把工作區放到技能內。",
       "rules": [
         "R01",
@@ -105,7 +105,7 @@
       "links": [
         [
           "本版下載",
-          "https://github.com/AI-GO-APP/aigo-learning-skill/releases/tag/v0.2.0"
+          "https://github.com/AI-GO-APP/aigo-learning-skill/releases/tag/v0.2.1"
         ],
         [
           "Codex 技能路徑",

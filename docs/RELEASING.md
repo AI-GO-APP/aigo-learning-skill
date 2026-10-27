@@ -14,6 +14,8 @@ Builder 為獨立上游，只取固定 commit 的工具與技術摘錄，保留 
 6. commit 後再次建置到新的輸出目錄，使 RELEASE.json 記錄該 commit；確認工作樹無變更、CI 通過後，在該 commit 建 `v<版本>` tag 及 GitHub release，附上四種產物。不要使用 GitHub 自動產生的原始碼 ZIP 當學生安裝包。
 7. 從 GitHub 重新下載驗證 SHA-256，核對 release 指向同一 commit。public release 不需要學生取得 Builder repo 權限。
 
+公開資產檔名固定使用 ASCII（含 PDF），避免 GitHub 改寫中文名稱後與校驗清單不一致；PDF 內文維持繁體中文。
+
 ## 更新機制
 
 學生每次使用時會呼叫 check_update，網路檢查間隔 3 小時。檢查自己的 GitHub main commit；

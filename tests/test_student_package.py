@@ -240,6 +240,7 @@ class ContentAndReleaseTests(unittest.TestCase):
             a,b=Path(temp)/'a',Path(temp)/'b'
             one,two=release.build(a),release.build(b)
             self.assertEqual(one['sha256'],two['sha256'])
+            self.assertTrue(all(name.isascii() for name in one['sha256']))
             with self.assertRaises(FileExistsError): release.build(a)
 
 

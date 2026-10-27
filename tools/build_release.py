@@ -67,7 +67,9 @@ def build(output: Path, root=ROOT) -> dict:
             item.compress_type = zipfile.ZIP_DEFLATED
             item.external_attr = 0o100644 << 16
             zipped.writestr(item, data)
-    book = output / f"AI_GO_學員指南_v{version}.pdf"
+    # GitHub normalizes non-ASCII asset names; use stable public filenames so
+    # downloaded SHA256SUMS and RELEASE.json can be verified without renaming.
+    book = output / f"AI_GO_Student_Guide_v{version}.pdf"
     book.write_bytes(files["assets/student-handbook.pdf"])
     checksums = {archive.name: sha(archive.read_bytes()), book.name: sha(book.read_bytes())}
     (output / "SHA256SUMS").write_text("".join(f"{value}  {name}\n" for name, value in checksums.items()), encoding="utf-8", newline="\n")
