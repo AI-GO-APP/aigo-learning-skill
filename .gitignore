@@ -1,0 +1,8 @@
+.aigo/
+.env
+.venv/
+__pycache__/
+*.pyc
+dist/
+tmp/
+output/
