@@ -12,6 +12,7 @@ SKILL_ROOT = Path(__file__).resolve().parents[1]
 COURSE_BLOCK='''<!-- aigo-learning-workspace -->
 ## AI GO 學習版工作區
 
+本工作區固定為學習版：每個對話都同時使用 aigo-learning 與 aigo-builder，學員不必說「用學習版」。只有學員明確要求改用一般版時才切換。
 本工作區同時使用 aigo-learning 與 aigo-builder。Builder 負責技術、資料、串接、開發與部署；學習版負責白話引導、練習與理解驗收。
 技術必要資訊與驗證閘門不能省略，提問可分小步。純討論不登入，實作前確認需求與範圍。
 每次操作沿用 .aigo/learning.json 的課程帳號、已分配 App 與專屬群組，不借他人帳號。
