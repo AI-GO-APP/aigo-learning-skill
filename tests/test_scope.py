@@ -70,31 +70,10 @@ class ScopeTests(unittest.TestCase):
         with self.assertRaisesRegex(ValueError, "身分"):
             scope["check_identity"](self.local(), {"email": None})
 
-    def test_cli_only_reads_identity_then_bound_app(self):
-        with tempfile.TemporaryDirectory() as temp:
-            ws = Path(temp)
-            (ws / ".aigo").mkdir()
-            (ws / ".aigo/config.json").write_text(json.dumps(self.config))
-            (ws / ".aigo/learning.json").write_text(json.dumps(self.profile))
-            fake_auth = types.SimpleNamespace(resolve_base_url=mock.Mock(return_value=BASE),
-                                             get_token=mock.Mock(return_value="fake-test-token"),
-                                             get_app_info=mock.Mock(return_value=self.info))
-            response = types.SimpleNamespace(raise_for_status=mock.Mock(),
-                                             json=mock.Mock(return_value={"email": self.profile["student_email"]}))
-            fake_http = types.SimpleNamespace(get=mock.Mock(return_value=response))
-            with mock.patch.dict(sys.modules, {"aigo_auth": fake_auth, "httpx": fake_http}), contextlib.redirect_stdout(io.StringIO()) as out:
-                self.assertEqual(scope["main"](["--workspace", str(ws), "--app", "practice"]), 0)
-            fake_http.get.assert_called_once()
-            fake_auth.get_app_info.assert_called_once_with(BASE, "fake-test-token", APP)
-            self.assertNotIn("fake-test-token", out.getvalue())
-            # A cached/inherited teacher identity is rejected before any App read.
-            response.json.return_value = {"email": "teacher@example.test"}
-            fake_auth.get_app_info.reset_mock()
-            with mock.patch.dict(sys.modules, {"aigo_auth": fake_auth, "httpx": fake_http}), contextlib.redirect_stdout(io.StringIO()):
-                self.assertEqual(scope["main"](["--workspace", str(ws), "--app", "practice"]), 1)
-            fake_auth.get_app_info.assert_not_called()
-            # Invalid scope never authenticates or calls the API.
-            fake_auth.get_token.reset_mock()
-            with mock.patch.dict(sys.modules, {"aigo_auth": fake_auth, "httpx": fake_http}), contextlib.redirect_stdout(io.StringIO()):
-                self.assertEqual(scope["main"](["--workspace", str(ws), "--app", "other"]), 1)
-            fake_auth.get_token.assert_not_called()
+    def test_cli_forwards_exact_workspace_and_app_to_builder_in_separate_process(self):
+        with tempfile.TemporaryDirectory() as temp,mock.patch('subprocess.run',return_value=types.SimpleNamespace(returncode=0)) as run:
+            self.assertEqual(scope['main'](['--workspace',temp,'--app','practice']),0)
+            command=run.call_args.args[0]
+            self.assertIn('aigo_learning_scope.py',command[5])
+            self.assertEqual(command[-6:],['--workspace',str(Path(temp).resolve()),'--app','practice','--kind','custom'])
+            self.assertNotIn('fake-test-token',str(command))

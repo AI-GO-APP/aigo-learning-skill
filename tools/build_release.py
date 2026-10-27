@@ -9,11 +9,10 @@ import zipfile
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
-CORE_TOOLS = ("aigo_auth.py", "aigo_cli_check.py", "aigo_limits.py", "aigo_scaffold.py", "aigo_sync.py",
-              "aigo_compile.py", "aigo_publish.py", "aigo_typecheck.py", "pyproject.toml", "uv.lock")
+CORE_TOOLS = ()  # Platform tools belong to the separately installed Builder skill.
 REFERENCES = ("teaching.md", "practice-area.md", "technical-use.md", "operations.md", "outputs.md", "student-rules.md", "workflow.md",
-              'onboarding.md','glossary.md','faq.md','hosted-learning.md')
-TECHNICAL = ("vfs.md", "actions.md", "data-placement.md", "data-references.md", "frontend-states.md",'hosted-apps.md')
+              'onboarding.md','glossary.md','faq.md','hosted-learning.md','builder-guide.md')
+TECHNICAL = ()
 
 
 def sha(data):
@@ -22,9 +21,9 @@ def sha(data):
 
 def runtime_files(root=ROOT) -> dict[str, bytes]:
     names = ["SKILL.md", "VERSION", "README.md", "LICENSE", "UPSTREAM.json", "exercises/practice-sequence.md",
-             "assets/student-handbook.pdf",'assets/hosted-ci.py','assets/hosted-deploy.example.yml',
+             "assets/student-handbook.pdf",
              "scripts/check_update.py", "scripts/student_update.py",'scripts/learning_bootstrap.py',
-             "scripts/learning_scope.py", "scripts/learning_pdf.py", "scripts/requirements-pdf.txt",
+             "scripts/learning_scope.py", "scripts/builder_runtime.py", "scripts/learning_pdf.py", "scripts/requirements-pdf.txt",
              *(f"scripts/{name}" for name in CORE_TOOLS), *(f"references/{name}" for name in REFERENCES),
              *(f"technical/{name}" for name in TECHNICAL)]
     files = {}

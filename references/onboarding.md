@@ -13,14 +13,19 @@
 
 ## 第一則本機對話
 
-> 我沒有程式經驗。請從 https://github.com/AI-GO-APP/aigo-learning-skill 讀取 README，下載最新穩定 release 的學習版安裝 ZIP，依 SHA256SUMS 與 PACKAGE.json 驗證。先回報目前完整工作區路徑，讓我核對。確認後，依目前工具安裝到本專案 .claude/skills/ 或 .agents/skills/；已有安裝先核對，不覆蓋作業。只安裝學習版，檢查一般版是否同時啟用，不擅改全域設定。完成後教我開新對話啟用 aigo-learning；不登入 AI GO、不建立或發布 App。
+> 請幫我準備 AI GO 學習版：https://github.com/AI-GO-APP/aigo-learning-skill 。我沒有程式經驗，請一步一步帶我。先回報本機完整工作區路徑讓我核對，再依 README 確認並準備 aigo-learning＋aigo-builder 兩個 skill；已有安裝先核對，不重複覆蓋。學習版用最新穩定 release ZIP 並驗證完整性；Builder 依官方 repo 安裝及核對相容版本。保留我的作業與原設定，建立本專案的學習版引導；不擅改全域設定。完成後教我開新對話用學習版；先不登入 AI GO、不建立或發布 App。
+
+## 兩個 skill 一起使用
+
+Builder 負責技術、操作及整合，學習版負責教學引導。先核對兩個技能與 Builder 1.74.0 以上的相容版本；載入 Builder 不代表結束學習。
+安裝後先建課程 AGENTS.md 與 CLAUDE.md 引用；初始群組資料未齊時只討論與做本機原型。舊版用 --upgrade-workspace 保留作業與 App。
 
 ## AI 引導完成，不丟給學員手寫
 
 - 先檢查作業系統與既有版本，再解釋並安裝缺少的免費工具：Python 3.10+、uv、Node.js LTS。只有需要的時候再補 Git、GitHub CLI、容器工具。不可直接覆寫既有版本、環境變數或全域設定。
 - 安裝需系統權限或圖形介面時，給明確的按鈕與下一步，等學員完成；不假裝已裝好。尚無工具也能先做需求、流程與規格。
 - 取得助教提供的非機密資料後，使用 `scripts/learning_bootstrap.py --workspace <工作區> --tenant-url <網址> --email <email> --role-id <id>` 建立結構與非機密設定。這支工具不登入、不建 App、不覆蓋既有設定。
-- 學員只須在本機自己輸入帳密；AI 提供憑證檔絕對路徑與開啟方式，不讀出內容。填好後依已有授權核對登入身分。
+- 登入照 Builder 提供的方法，先用白話說明瀏覽器登入與帳密檔兩種選擇；密碼由學員自己輸入，AI 不檢視或讀出。依已有授權核對登入身分。
 - 提到程式、設定或錯誤碼時，先用白話說明。所有後續情景附可貼提示詞，明確寫出允許操作與停止邊界。
 
 官方來源：
