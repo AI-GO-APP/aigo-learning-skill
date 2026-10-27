@@ -49,6 +49,7 @@ def source_files(root: Path,cfg: dict) -> list[Path]:
 
 def tarball(root: Path,cfg: dict,commit: str) -> bytes:
     if not re.fullmatch(r'[0-9a-f]{40}',commit): raise ValueError('缺少本次完整 commit')
+    root=root.resolve()
     files=source_files(root,cfg); buf=io.BytesIO()
     with tarfile.open(fileobj=buf,mode='w:gz') as tar:
         for path in files: tar.add(path,arcname=path.relative_to(root).as_posix(),recursive=False)
