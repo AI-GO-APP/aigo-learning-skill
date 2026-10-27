@@ -100,7 +100,7 @@ class PdfIntegrationTests(unittest.TestCase):
                                       "--render-dir", str(Path(temp) / "render")])
             result = json.loads(out.getvalue())
             self.assertEqual(status, 1)
-            self.assertEqual(result["partial_output"], str(target))
+            self.assertEqual(Path(result["partial_output"]).resolve(), target.resolve())
             self.assertEqual(result["visual_review"], "pending")
             self.assertTrue(target.exists())
 
