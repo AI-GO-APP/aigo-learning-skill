@@ -1,8 +1,8 @@
 # 技術使用方式
 
-本版重點是 internal Custom App 的基礎練習。實際開發前先確認需求：誰用、做什麼、資料在哪、如何驗收。
+本版包含 internal Custom App 與對外 Hosted App 兩種作品。實際開發前先確認需求：誰用、做什麼、資料在哪、如何驗收。
 公開網站、SEO、自有後端框架或長連線等需求需評估 Hosted；不可為了配合教材硬塞 Custom。
-Hosted 的發布依專案既有流程與教師核對資料，不走 Custom VFS 編譯。
+Hosted 讀 hosted-learning.md 與對應技術摘錄，經自己的 repo／Actions 發布，不走 Custom VFS 編譯。
 
 ## 摘錄索引
 
@@ -15,10 +15,11 @@ Hosted 的發布依專案既有流程與教師核對資料，不走 Custom VFS �
 | `technical/data-placement.md` | 預設表／自建表、custom_data、延伸欄位的選擇 |
 | `technical/data-references.md` | 用引用面查表與欄位、正確資料引用 |
 | `technical/frontend-states.md` | 載入、有資料、空資料、錯誤與送出中 |
+| `technical/hosted-apps.md` | Hosted 形態、部署閘門、環境變數、資料引用、可見度及持久化 |
 
 摘錄包含的歷史測試數字只代表該次環境；當前限制要核對實際平台資訊。
 文中的「教師補充」代表本套件沒有附帶該進階資料；不要猜測內容，也不要回頭找完整 Builder 流程。
-技術定義不隨教學模式改變，不能因為學生版本就改寫 API 語意或省略授權要求。
+技術定義不隨教學模式改變，不能因為學習版本就改寫 API 語意或省略授權要求。
 
 ## 必須沿用的技術原則
 

@@ -1,6 +1,18 @@
-# AI GO 學員學習技能
+# AI GO 學習版技能
 
-從工具與工作區設定、需求描述、規格確認，到小步實作、功能驗收與 PDF 成果輸出。
+從零基礎起手、工具與設定協作，到內部 Custom App＋對外 Hosted App、整合驗收及 PDF 成果。
+一般開發技能統一稱「一般版」，提供學員的技能稱「學習版」。
+
+## 課前與第一則對話
+
+準備 Claude Pro 以上，或 Codex 搭配 ChatGPT Pro；兩家不用都訂。
+助教會提供公司空間網址、學員 email、專屬群組名稱與 id。
+在協作工具開啟本機練習資料夾，貼：
+
+> 我沒有程式經驗。請從 https://github.com/AI-GO-APP/aigo-learning-skill 讀 README，下載最新穩定 release 的學習版 ZIP，驗證 SHA256SUMS 與 PACKAGE.json。先回報工作區完整路徑等我確認，再依目前工具安裝到本專案；只裝學習版、檢查一般版混用，不覆蓋作業或全域設定。完成後教我開新對話啟用；不登入 AI GO、不建 App。
+
+Python、uv、Node.js 的檢查與安裝及非機密設定由 AI 引導，不要求新手手寫 JSON。
+完整準備、官方價格來源及提示詞見 references/onboarding.md；每種情景與 FAQ 見 PDF。
 
 ## 下載與安裝
 
@@ -31,10 +43,11 @@
 不直接跟著 Builder main 更換教學行為。學生只跟本 repo 的已提交版本更新。
 
 ```text
-python tools/build_handbook.py
+python tools/build_handbook.py --present-skill <本機_ai-go-app-present_路徑>
 python tools/build_release.py --output <全新的輸出目錄>
 python -m unittest discover -s tests -v
 ```
 
-PDF 相依：`scripts/requirements-pdf.txt`。逐頁目視確認屬發版工作，不能以渲染成功代替。
+維護者出手冊使用本機 ai-go-app-present 的 AI GO B2B 母版（非泛用 Presentations 版型）；學生安裝不需這個私有製作工具。
+學員成果產生器的 PDF 相依：`scripts/requirements-pdf.txt`。逐頁目視確認屬發版工作，不能以渲染成功代替。
 詳細發版步驟見 docs/RELEASING.md。

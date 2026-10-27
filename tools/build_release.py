@@ -11,8 +11,9 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parents[1]
 CORE_TOOLS = ("aigo_auth.py", "aigo_cli_check.py", "aigo_limits.py", "aigo_scaffold.py", "aigo_sync.py",
               "aigo_compile.py", "aigo_publish.py", "aigo_typecheck.py", "pyproject.toml", "uv.lock")
-REFERENCES = ("teaching.md", "practice-area.md", "technical-use.md", "operations.md", "outputs.md", "student-rules.md", "workflow.md")
-TECHNICAL = ("vfs.md", "actions.md", "data-placement.md", "data-references.md", "frontend-states.md")
+REFERENCES = ("teaching.md", "practice-area.md", "technical-use.md", "operations.md", "outputs.md", "student-rules.md", "workflow.md",
+              'onboarding.md','glossary.md','faq.md','hosted-learning.md')
+TECHNICAL = ("vfs.md", "actions.md", "data-placement.md", "data-references.md", "frontend-states.md",'hosted-apps.md')
 
 
 def sha(data):
@@ -21,7 +22,8 @@ def sha(data):
 
 def runtime_files(root=ROOT) -> dict[str, bytes]:
     names = ["SKILL.md", "VERSION", "README.md", "LICENSE", "UPSTREAM.json", "exercises/practice-sequence.md",
-             "assets/student-handbook.pdf", "scripts/check_update.py", "scripts/student_update.py",
+             "assets/student-handbook.pdf",'assets/hosted-ci.py','assets/hosted-deploy.example.yml',
+             "scripts/check_update.py", "scripts/student_update.py",'scripts/learning_bootstrap.py',
              "scripts/learning_scope.py", "scripts/learning_pdf.py", "scripts/requirements-pdf.txt",
              *(f"scripts/{name}" for name in CORE_TOOLS), *(f"references/{name}" for name in REFERENCES),
              *(f"technical/{name}" for name in TECHNICAL)]
@@ -43,7 +45,7 @@ def manifest(root=ROOT) -> dict:
     from pypdf import PdfReader
     import io
     reader = PdfReader(io.BytesIO(files["assets/student-handbook.pdf"]))
-    if len(reader.pages) != len(book["pages"]) or f"v{version}" not in reader.pages[0].extract_text():
+    if len(reader.pages) != book['rendered_pages'] or f"v{version}" not in reader.pages[0].extract_text():
         raise ValueError("PDF 不是本版本的完整教材")
     upstream = json.loads(files["UPSTREAM.json"])
     return {"schema": 1, "skill": "aigo-learning", "version": version, "builder_version": upstream["version"],
