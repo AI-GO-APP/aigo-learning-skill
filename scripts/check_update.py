@@ -27,7 +27,7 @@ def validate(root: Path) -> dict:
             raise ValueError(f"套件內容已改變：{name}")
     if (root / "VERSION").read_text(encoding="utf-8").strip() != meta["version"]:
         raise ValueError("VERSION 與套件清單版本不一致")
-    ignored = {"__pycache__", ".venv", ".git", ".github", "tools", "tests", "docs", "dist", "tmp", "output"}
+    ignored = {"__pycache__", ".venv", ".git", ".github", ".ci", "tools", "tests", "docs", "dist", "tmp", "output"}
     actual = {p.relative_to(root).as_posix() for p in root.rglob("*") if p.is_file()
               and not any(part in ignored for part in p.relative_to(root).parts)
               and p.name not in {"AGENTS.md", ".gitignore", ".gitattributes"}}

@@ -5,7 +5,8 @@ ROOT=Path(__file__).resolve().parents[1]
 sys.path.insert(0,str(ROOT/'scripts'))
 from learning_bootstrap import setup
 import learning_scope as scope
-ci=runpy.run_path(str(ROOT/'assets/hosted-ci.py'))
+from builder_runtime import resolve
+ci=runpy.run_path(str(Path(resolve()['root'])/'resources/hosted-ci.py'))
 BASE='https://course.ai-go.app'; ROLE='11111111-1111-4111-8111-111111111111'
 APP='22222222-2222-4222-8222-222222222222'; USER='33333333-3333-4333-8333-333333333333'
 
@@ -62,18 +63,11 @@ class HostedScopeTests(unittest.TestCase):
         with self.assertRaises(ValueError):scope.check_hosted_remote(self.target(),self.me,self.info)
         self.info['access_role_ids']=[ROLE]
         self.assertEqual(scope.check_hosted_remote(self.target(),self.me,self.info)['scope_check'],'passed')
-    def test_cli_checks_identity_then_only_the_exact_hosted_app(self):
-        with tempfile.TemporaryDirectory() as temp:
-            root=Path(temp);(root/'.aigo').mkdir()
-            for name,body in [('config.json',self.config),('learning.json',self.profile)]:
-                (root/'.aigo'/name).write_text(json.dumps(body))
-            auth=types.SimpleNamespace(resolve_base_url=mock.Mock(return_value=BASE),get_token=mock.Mock(return_value='fake-test-token'))
-            def response(body):return types.SimpleNamespace(raise_for_status=mock.Mock(),json=mock.Mock(return_value=body))
-            http=types.SimpleNamespace(get=mock.Mock(side_effect=[response(self.me),response(self.info)]))
-            with mock.patch.dict(sys.modules,{'aigo_auth':auth,'httpx':http}),mock.patch('sys.stdout',new_callable=io.StringIO) as out:
-                self.assertEqual(scope.main(['--workspace',str(root),'--app','site','--kind','hosted']),0)
-            self.assertEqual(http.get.call_args_list[1].args[0],BASE+'/api/v1/hosted-apps/'+APP)
-            self.assertNotIn('fake-test-token',out.getvalue())
+    def test_cli_forwards_hosted_product_line_to_builder(self):
+        with tempfile.TemporaryDirectory() as temp,mock.patch('subprocess.run',return_value=types.SimpleNamespace(returncode=0)) as run:
+            self.assertEqual(scope.main(['--workspace',temp,'--app','site','--kind','hosted']),0)
+            self.assertEqual(run.call_args.args[0][-4:],['--app','site','--kind','hosted'])
+
 
 class HostedCiTests(unittest.TestCase):
     def fixture(self,root):

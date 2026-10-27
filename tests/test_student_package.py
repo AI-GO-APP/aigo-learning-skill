@@ -225,11 +225,15 @@ class ContentAndReleaseTests(unittest.TestCase):
             for obsolete in ('普通模式','一般模式','學習模式','學生版','投資 Agent'): self.assertNotIn(obsolete,text,path.name)
         self.assertIn('建立後立即',rules); self.assertIn('不編譯或發布',rules)
 
-    def test_upstream_files_are_exact_pinned_bytes(self):
+    def test_builder_is_installed_dependency_and_platform_tools_are_not_copied(self):
         upstream=json.loads((ROOT/'UPSTREAM.json').read_text(encoding='utf-8'))
-        self.assertEqual(len(upstream['commit']),40)
-        for name,value in upstream['vendored_files'].items():
-            self.assertEqual(hashlib.sha256((ROOT/name).read_bytes()).hexdigest(),value,name)
+        self.assertEqual(upstream['policy'],'installed-skill-dependency')
+        self.assertEqual(upstream['minimum_version'],'1.74.0')
+        files=release.runtime_files()
+        self.assertFalse(any(name.startswith('technical/') for name in files))
+        self.assertNotIn('scripts/aigo_auth.py',files)
+        self.assertNotIn('scripts/aigo_publish.py',files)
+        self.assertIn('scripts/builder_runtime.py',files)
 
     def test_runtime_does_not_export_builder_admin_or_maintenance(self):
         files=release.runtime_files()

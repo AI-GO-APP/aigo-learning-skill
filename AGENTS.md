@@ -1,10 +1,7 @@
 # 維護範圍
 
-這是公開的 AI GO 學生技能來源與發行 repo。學生規則、教材、提示詞在本 repo 維護。
-Builder 只作固定 commit 的技術來源，見 UPSTREAM.json；不可載入 Builder 的 SKILL.md。
-學生與客戶資料、帳密、token、內部測試對話與本機設定不能提交。
-
-版本變更：更新 VERSION、教材來源與規則；建置 PDF、產生 PACKAGE.json、測試，再 commit。
-release 的 tag、ZIP、PDF、SHA256SUMS 必須來自同一 commit。發版前重建並比對 hash。
-學生更新器只認 AI-GO-APP/aigo-learning-skill，不能改動 Builder 安裝或工作區。
-測試使用假的 token 與虛構資料，不登入／修改正式租戶。不要把 compile、HTTP 200 或草稿當成完整驗收。
+這是公開的 AI GO 學習版引導技能與教材 repo。學生／助教資料、帳密及個人設定不能提交。
+本技能依賴獨立安裝的 aigo-builder，技術、操作與整合只在 Builder 維護；不要再次匯入 Builder scripts 或 technical/ 副本。
+學習版負責白話、練習、理解驗收及課程設定。Builder 版本相容範圍在 UPSTREAM.json。
+版本變更時同步 skill、學生教材、PACKAGE、release；助教文件保留在課程工作區，不進本 repo。
+測試只用假資料，不登入／修改正式租戶。雙 skill 測試需以 AIGO_BUILDER_SKILL 指定已核對的 Builder source/install。
