@@ -154,7 +154,7 @@
       ],
       "prompt": "這是我的開通卡。我想開始使用 AI GO，請幫我設定，告訴我要開哪個畫面、自己輸入什麼。",
       "success": "能開啟自己的 AI GO，知道從哪裡開始找作品。",
-      "image": "assets/screenshots/01-workspace.jpg",
+      "image": "docs/screenshots/01-workspace.jpg",
       "image_caption": "DnSchool 登入後的作品清單節錄；圖片未顯示個人帳號或管理選單。"
     },
     {
@@ -244,7 +244,7 @@
       ],
       "prompt": "我想做【自己的情境】，給【誰】用，因為現在【哪裡不方便】。請先幫我把從開始到完成的流程畫清楚。",
       "success": "兩個作品各給誰用、用什麼資料及如何串接已說清楚。",
-      "image": "assets/screenshots/02-app-types.jpg",
+      "image": "docs/screenshots/02-app-types.jpg",
       "image_caption": "實際起手式選單；先讓 AI 判斷路線，再選入口。"
     },
     {
@@ -294,7 +294,7 @@
       "prompt": "我要建立自己的內部系統。開通卡上的群組是【名稱與編號】，請帶我在畫面上選對它。",
       "success": "自己的作品已建立，群組和開通卡一致。",
       "part": "B 內部系統",
-      "image": "assets/screenshots/03-create-internal.jpg",
+      "image": "docs/screenshots/03-create-internal.jpg",
       "image_caption": "目前建立表單只有名稱、網址名稱與使用模式；群組在建立後設定。"
     },
     {

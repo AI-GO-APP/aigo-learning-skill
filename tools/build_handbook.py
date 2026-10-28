@@ -65,9 +65,9 @@ def build(source,output,*,replace=False,present_skill=None,node=None,previews=No
         prompt='<div class="'+card_class+'"><div class="lesson-card-head"><span class="lesson-label">範例提示詞</span><span class="lesson-recipient">'+escape(recipient)+'</span></div><div class="lesson-prompt">'+escape(page['prompt'])+'</div></div>'
         if page.get('image'):
             picture=(ROOT/page['image']).resolve()
-            allowed=(ROOT/'assets/screenshots').resolve()
+            allowed=(ROOT/'docs/screenshots').resolve()
             if picture.suffix.lower() not in ('.jpg','.jpeg','.png') or not picture.is_relative_to(allowed):
-                raise ValueError('教材截圖必須來自本 repo 的 assets/screenshots')
+                raise ValueError('教材截圖必須來自本 repo 的 docs/screenshots')
             mime='image/png' if picture.suffix.lower()=='.png' else 'image/jpeg'
             uri='data:'+mime+';base64,'+base64.b64encode(picture.read_bytes()).decode('ascii')
             figure='<div class="lesson-figure"><img src="'+uri+'" alt="'+escape(page['title'],quote=True)+'"></div>'
