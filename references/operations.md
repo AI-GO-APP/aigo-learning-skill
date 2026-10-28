@@ -1,6 +1,6 @@
 # 雙 skill 操作與範圍核對
 
-1. 學習版更新自己的 repo；builder_runtime.py --workspace <工作區> --update 檢查已安裝 Builder 的更新及版本。
+1. 學生學習版更新自己的 repo；builder_runtime.py --workspace <工作區> --update 檢查已安裝 Builder 的更新及版本。
 2. 讀 Builder 入口，技術指令都使用已核對的 Builder 完整路徑。操作 cwd 是學員工作區，不是技能安裝目錄。
 3. 安裝後 learning_bootstrap.py --workspace <工作區> --prepare-only 保留原內容並加入課程 AGENTS.md／CLAUDE.md 引用。
 4. 助教提供租戶網址、email、群組名稱與 id 後，以 learning_bootstrap.py 建非機密設定；舊工作區用 --upgrade-workspace，不重建 App 或憑證。
@@ -8,7 +8,7 @@
 6. 內部 App 在建立介面手動選助教群組，立即回讀；未確認前不匯入、同步、編譯或發布。再用 Builder 登錄實際 id、slug、kind 與明確別名。
 
 每次寫入前：
-`python <學習版>/scripts/learning_scope.py --workspace <工作區> --app <別名> [--kind hosted]`
+`python <學生學習版>/scripts/learning_scope.py --workspace <工作區> --app <別名> [--kind hosted]`
 
 這個薄轉接會在獨立的 Builder 執行環境呼叫 scripts/aigo_learning_scope.py，不混用 Python 內已匯入的舊同名工具。
 它核對有效空間、學員身分、App 分配、產品線與可見度；Custom 為專屬群組，Hosted 為建立者／slug／公開授權。

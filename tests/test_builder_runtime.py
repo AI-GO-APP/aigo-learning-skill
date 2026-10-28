@@ -46,5 +46,33 @@ class BuilderDependencyTests(unittest.TestCase):
             self.assertEqual(secret.read_bytes(),b'private-test-fixture')
     def test_course_prepare_inside_skill_is_refused(self):
         with self.assertRaises(ValueError):prepare(ROOT/'tmp/forbidden')
+    def test_old_managed_block_is_replaced_without_changing_surrounding_rules(self):
+        with tempfile.TemporaryDirectory() as temp:
+            root=Path(temp)
+            original='private prefix\n<!-- aigo-learning-workspace -->\nold course rule\n<!-- /aigo-learning-workspace -->\nprivate suffix\n'
+            (root/'AGENTS.md').write_text(original,encoding='utf-8')
+            prepare(root)
+            updated=(root/'AGENTS.md').read_text(encoding='utf-8')
+            self.assertTrue(updated.startswith('private prefix\n'))
+            self.assertTrue(updated.endswith('\nprivate suffix\n'))
+            self.assertNotIn('old course rule',updated)
+            self.assertIn('學生不必重複提示',updated)
+            prepare(root)
+            self.assertEqual((root/'AGENTS.md').read_text(encoding='utf-8'),updated)
+    def test_broken_managed_marker_is_rejected_before_any_write(self):
+        with tempfile.TemporaryDirectory() as temp:
+            root=Path(temp);path=root/'AGENTS.md';path.write_text('keep\n<!-- aigo-learning-workspace -->\n',encoding='utf-8')
+            before=path.read_bytes()
+            with self.assertRaises(ValueError):prepare(root)
+            self.assertEqual(path.read_bytes(),before)
+            self.assertFalse((root/'CLAUDE.md').exists())
+    def test_student_permission_standard_excludes_global_management_and_broadcast(self):
+        data=json.loads((ROOT/'references/permissions-standard.json').read_text(encoding='utf-8'))
+        allowed=set(data['permissions'])
+        self.assertEqual(len(allowed),11)
+        forbidden={'announcements.write','system.admin','system.roles_manage','hr.member_manage','system.invitations'}
+        self.assertTrue(allowed.isdisjoint(forbidden))
+        self.assertTrue(forbidden<=set(data['denied']))
+        self.assertIn('announcements.read',allowed)
 
 if __name__=='__main__':unittest.main()
