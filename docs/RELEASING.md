@@ -6,8 +6,8 @@ Builder 為獨立安裝的技術技能；UPSTREAM.json 宣告相容版本，不�
 
 ## 發版順序
 
-1. 更新 VERSION。技能、PDF 及 release 都使用相同版本。教學規則、提示詞與教材來源在同一 commit 檢視。
-2. `python tools/build_handbook.py --present-skill <本機 ai-go-app-present 路徑>` 以實際 AI GO B2B 母版建 PDF；渲染後逐頁目視，檢查字、提示詞、順序與規則是否完整。維護者本機需 Node／Chrome 及該工具相依；學生安裝不需私有 present 工具。文件來源會記錄實際頁數供打包核對。
+1. 更新 VERSION，作為技能及 release 版本。教材以 docs/handbook.json 的 version 另行記錄，PACKAGE／RELEASE.json 的 handbook_version 對應它，教材版本不能晚於技能版本。
+2. 教材內容變更時，才用 `python tools/build_handbook.py --present-skill <本機 ai-go-app-present 路徑>` 以實際 AI GO B2B 母版建 PDF；渲染後逐頁目視，檢查字、提示詞、順序與規則是否完整。純技能維護可沿用既有 PDF 與來源，核對原檔 SHA-256 不變。維護者本機需 Node／Chrome 及該工具相依；學生安裝不需私有 present 工具。文件來源會記錄實際頁數供打包核對。
 3. `python tools/build_release.py --output <新的輸出資料夾>` 更新 PACKAGE.json，產生學生 ZIP、PDF、SHA256SUMS 與 RELEASE.json。
 4. 以 AIGO_BUILDER_SKILL 指定相容 Builder，測試相依缺少／舊版拒絕、課程標記、舊工作區升級、範圍轉接、套件完整性、更新失敗復原、路徑安全、作業保留及 PDF；用最終 ZIP 解壓再驗證。
 5. commit／push，確認公開內容沒有憑證或個人設定。GitHub main 的 PACKAGE 必須與來源一致，否則更新器會中止。

@@ -207,9 +207,33 @@ class UpdateTests(unittest.TestCase):
 
 
 class ContentAndReleaseTests(unittest.TestCase):
+    def copy_release_source(self,root):
+        for name,data in release.runtime_files().items():
+            path=root/name;path.parent.mkdir(parents=True,exist_ok=True);path.write_bytes(data)
+        path=root/'docs/handbook.json';path.parent.mkdir();path.write_bytes((ROOT/'docs/handbook.json').read_bytes())
+
+    def test_skill_only_release_keeps_material_bytes_and_its_own_version(self):
+        with tempfile.TemporaryDirectory() as temp:
+            root=Path(temp)/'source';self.copy_release_source(root)
+            book=json.loads((root/'docs/handbook.json').read_text(encoding='utf-8'))
+            version='.'.join([str(int(book['version'].split('.')[0])+1),'0','0'])
+            (root/'VERSION').write_bytes((version+'\n').encode())
+            output=Path(temp)/'release';meta=release.build(output,root)
+            self.assertEqual(meta['handbook_version'],book['version'])
+            self.assertEqual((output/f"AI_GO_Student_Guide_v{book['version']}.pdf").read_bytes(),(root/'assets/student-handbook.pdf').read_bytes())
+            with zipfile.ZipFile(output/f'aigo-learning-{version}.zip') as archive:
+                self.assertEqual(archive.read('aigo-learning/assets/student-handbook.pdf'),(root/'assets/student-handbook.pdf').read_bytes())
+
+    def test_material_version_and_pdf_mismatch_are_rejected(self):
+        with tempfile.TemporaryDirectory() as temp:
+            root=Path(temp);self.copy_release_source(root);path=root/'docs/handbook.json';book=json.loads(path.read_text(encoding='utf-8'))
+            for version in ('999.0.0','0.0.0','not-version'):
+                book['version']=version;path.write_text(json.dumps(book),encoding='utf-8')
+                with self.subTest(version=version),self.assertRaises(ValueError):release.manifest(root)
+
     def test_all_pages_have_prompt_and_order_is_from_setup_to_acceptance(self):
         book=json.loads((ROOT/'docs/handbook.json').read_text(encoding='utf-8'))
-        self.assertEqual(book['version'],(ROOT/'VERSION').read_text().strip())
+        self.assertLessEqual(tuple(map(int,book['version'].split('.'))),tuple(map(int,(ROOT/'VERSION').read_text().strip().split('.'))))
         self.assertTrue(all(p['prompt'].strip() and p['success'].strip() for p in book['pages']))
         parts=[p['part'] for p in book['pages']]
         self.assertLess(parts.index('A 課前準備'),parts.index('C 對外網站'))

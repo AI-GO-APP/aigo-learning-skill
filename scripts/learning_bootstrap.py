@@ -17,6 +17,9 @@ COURSE_BLOCK='''<!-- aigo-learning-workspace -->
 每個新對話先載入兩個技能入口；純討論也可唯讀，不因此更新或登入。不能只讀學習版摘要就回答技術做法；找不到 Builder 時明列技術尚未核對。
 技術必要資訊與驗證閘門不能省略，提問可分小步。純討論不登入，實作前確認需求與範圍。
 每次操作沿用 .aigo/learning.json 的課程帳號、已分配 App 與專屬群組，不借他人帳號。
+不得新增、修改、停用或刪除角色／成員權限與資料保護政策（含 App 級及空間級 Data Gate）；排錯、切普通版或載入 Builder 都不解除此規則。
+資料讀寫、表結構與引用只操作已核定的 data_resources；未登記或歸屬不明就停止，不以名稱或讀得到推定授權。本人新表以同次成功建立回應登記；共用表不改結構、不清空，只處理已核定的本人資料。
+管理作業交由助教在獨立管理工作區核對；學生工作區不借管理員帳號。本人對外網站沿用已確認的公開範圍，不把禁止修改資料政策誤解為禁止建立網站。
 建立內部 App 後立即由學員在存取設定手動選專屬群組，隨即回讀；未確認前不匯入、同步、編譯或發布。
 使用虛構資料；不把 App 可見度當成資料隔離證明。Hosted 先核對公開內容與最小資料引用，再按 Builder 流程部署及驗收。
 平台寫入先過課程範圍檢查，再執行 Builder 適用閘門。保留已有授權，不因切換技能擴大範圍。
@@ -62,7 +65,7 @@ def setup(workspace: Path, tenant: str, email: str, role_id: str) -> dict:
     config = root/'.aigo'
     outputs = {
         config/'config.json':json.dumps({'base_url':base,'email':email,'apps':{}},ensure_ascii=False,indent=2)+'\n',
-        config/'learning.json':json.dumps({'schema':2,'tenant_url':base,'student_email':email,'role_id':role,'apps':{},'hosted_apps':{},'builder_skill_path':builder['root']},ensure_ascii=False,indent=2)+'\n',
+        config/'learning.json':json.dumps({'schema':2,'tenant_url':base,'student_email':email,'role_id':role,'apps':{},'hosted_apps':{},'data_resources':{},'builder_skill_path':builder['root']},ensure_ascii=False,indent=2)+'\n',
         config/'.env':f'AIGO_EMAIL={email}\nAIGO_PASSWORD=\n',
     }
     # Validate every destination before making any change; do not inspect credentials.
@@ -102,6 +105,7 @@ def upgrade(workspace: Path) -> dict:
     tenant_url(data['tenant_url']);UUID(data['role_id'])
     if not isinstance(data.get('student_email'),str) or '@' not in data['student_email']:raise ValueError('學員身分未確認')
     data.update(schema=2,builder_skill_path=builder['root'])
+    data.setdefault('data_resources',{})
     prepare(root)
     path.write_text(json.dumps(data,ensure_ascii=False,indent=2)+'\n',encoding='utf-8',newline='\n')
     return {'workspace':str(root),'upgraded':True,'builder_version':builder['version'],'credentials_accessed':False,'platform_operations':0}
