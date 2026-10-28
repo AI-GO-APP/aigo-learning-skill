@@ -11,7 +11,7 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parents[1]
 CORE_TOOLS = ()  # Platform tools belong to the separately installed Builder skill.
 REFERENCES = ("teaching.md", "practice-area.md", "technical-use.md", "operations.md", "outputs.md", "student-rules.md", "workflow.md",
-              'onboarding.md','glossary.md','faq.md','hosted-learning.md','builder-guide.md')
+              'onboarding.md','glossary.md','faq.md','hosted-learning.md','builder-guide.md','capabilities.md','permissions-standard.json')
 TECHNICAL = ()
 
 

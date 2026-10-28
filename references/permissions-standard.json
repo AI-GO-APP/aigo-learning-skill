@@ -1,0 +1,26 @@
+{
+  "schema": 1,
+  "profile": "dnschool-student",
+  "verified_on": "2026-10-28",
+  "permissions": [
+    "builder.access",
+    "builder.manage_access",
+    "builder.publish",
+    "builder.app_cron_manage",
+    "hosted_apps.deploy",
+    "datacenter.schema_write",
+    "files.access",
+    "ai.hub.invoke",
+    "cowork.skill.manage",
+    "ai.access",
+    "announcements.read"
+  ],
+  "denied": [
+    "system.admin",
+    "announcements.write",
+    "system.roles_manage",
+    "hr.member_manage",
+    "system.invitations"
+  ],
+  "notes": "標準配置；操作前另核對本人實際權限，不能以此推定資料隔離或已含 AI 額度。"
+}

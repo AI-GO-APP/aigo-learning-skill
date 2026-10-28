@@ -10,9 +10,9 @@ from builder_runtime import resolve
 SKILL_ROOT = Path(__file__).resolve().parents[1]
 
 COURSE_BLOCK='''<!-- aigo-learning-workspace -->
-## AI GO 學習版工作區
+## AI GO 學生學習版工作區
 
-本工作區固定為學習版：每個對話都同時使用 aigo-learning 與 aigo-builder，學員不必說「用學習版」。只有學員明確要求改用一般版時才切換。
+本工作區固定使用學生學習版：每個對話都同時使用 aigo-learning 與 aigo-builder，學生不必重複提示或切換模式。改用普通版只改引導方式，不會升級平台方案、帳號權限或移除本工作區資源範圍。
 本工作區同時使用 aigo-learning 與 aigo-builder。Builder 負責技術、資料、串接、開發與部署；學習版負責白話引導、練習與理解驗收。
 技術必要資訊與驗證閘門不能省略，提問可分小步。純討論不登入，實作前確認需求與範圍。
 每次操作沿用 .aigo/learning.json 的課程帳號、已分配 App 與專屬群組，不借他人帳號。
@@ -31,7 +31,16 @@ def prepare(workspace: Path, *, dry_run=False) -> dict:
         path=root/name
         if path.is_symlink() or not path.resolve().is_relative_to(root):raise ValueError('工作區引導檔路徑異常')
         text=path.read_text(encoding='utf-8') if path.exists() else ''
-        addition=COURSE_BLOCK if name=='AGENTS.md' and '<!-- aigo-learning-workspace -->' not in text else ''
+        addition=''
+        if name=='AGENTS.md':
+            start='<!-- aigo-learning-workspace -->';end='<!-- /aigo-learning-workspace -->'
+            if start in text or end in text:
+                if text.count(start)!=1 or text.count(end)!=1 or text.index(end)<text.index(start):
+                    raise ValueError('學生引導區塊標記不完整或重複，未修改；請先核對原檔')
+                left=text.index(start);right=text.index(end)+len(end)
+                updated=text[:left]+COURSE_BLOCK.rstrip('\n')+text[right:]
+                if updated!=text:updates[path]=updated
+            else:addition=COURSE_BLOCK
         if name=='CLAUDE.md' and '@AGENTS.md' not in text.splitlines():addition='@AGENTS.md\n'
         if addition:updates[path]=text+('\n\n' if text and not text.endswith('\n') else '\n' if text else '')+addition
     if dry_run:return {'workspace':str(root),'guidance_files':[str(p) for p in updates],'platform_operations':0}
