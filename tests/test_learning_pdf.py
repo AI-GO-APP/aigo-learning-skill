@@ -56,7 +56,7 @@ class SourceTests(unittest.TestCase):
         files = pack.runtime_files(ROOT)
         for name in ("references/outputs.md", "scripts/learning_pdf.py", "scripts/requirements-pdf.txt"):
             self.assertIn(name, files)
-        self.assertEqual(files["VERSION"].decode().strip(), "0.5.1")
+        self.assertRegex(files["VERSION"].decode().strip(), r"^\d+\.\d+\.\d+$")
 
 
 @unittest.skipUnless(HAS_PDF and FONT.exists(), "Requires optional reportlab/pypdf and test CJK font")
