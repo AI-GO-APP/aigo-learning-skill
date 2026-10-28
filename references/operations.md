@@ -10,6 +10,8 @@
 每次寫入前：
 `python <學生學習版>/scripts/learning_scope.py --workspace <工作區> --app <別名> [--kind hosted]`
 
+資料讀寫、改表、引用及管理設定另按 resource-boundaries.md，以 `--operation` 指定操作並核對表範圍。資料政策與角色權限不屬學生可修改範圍；不因 Builder 技術流程可執行就取得授權。表範圍檢查是本機操作檢查，不替代平台授權。
+
 這個薄轉接會在獨立的 Builder 執行環境呼叫 scripts/aigo_learning_scope.py，不混用 Python 內已匯入的舊同名工具。
 它核對有效空間、學員身分、App 分配、產品線與可見度；Custom 為專屬群組，Hosted 為建立者／slug／公開授權。
 Builder 的 Custom 同步、刪檔、編譯、發布在課程標記生效時還會各自核對；full_deploy 沿用同一課程上下文。
