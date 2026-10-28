@@ -14,6 +14,8 @@ description: >
 
 ## 開始與相依
 
+每個新對話先載入本技能與已安裝 Builder 的 SKILL.md；不能只讀本技能的路線摘要，就代替 Builder 回答產品線、群組、串接或發布做法。客戶端有技能載入工具時，同時載入 `aigo-builder`；否則從已安裝目錄唯讀其入口，按題目讀所需參考。純討論仍可唯讀這些說明，不必登入、執行更新或其他腳本；找不到 Builder 就明說技術尚未核對，不靠學習版摘要猜做法。
+
 每次進入實作前，先以本技能 `scripts/check_update.py` 檢查自己的更新，再執行
 `python <學生學習版>/scripts/builder_runtime.py --workspace <工作區> --update`，檢查已安裝 Builder 與其更新。
 兩個 repo 分別更新、各有節流；Builder 必須為 1.74.0 以上、2.0.0 以下。回報更新時重讀對應入口。
