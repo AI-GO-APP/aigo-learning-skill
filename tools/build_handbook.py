@@ -1,6 +1,6 @@
 """Maintain PDFs with the installed ai-go-app-present AI GO B2B master."""
 from __future__ import annotations
-import argparse, hashlib, importlib.util, json, os, re, shutil, subprocess
+import argparse, base64, hashlib, importlib.util, json, os, re, shutil, subprocess
 from pathlib import Path
 from html import escape
 ROOT=Path(__file__).resolve().parents[1]
@@ -32,6 +32,11 @@ def build(source,output,*,replace=False,present_skill=None,node=None,previews=No
     table.t.lesson-table td,table.t.lesson-table th {font-size:20px;line-height:1.55;padding:10px 16px;}
     .lesson-table {margin:0;table-layout:fixed;width:100%;}
     table.t.lesson-table th:first-child,table.t.lesson-table td:first-child {width:22%;}
+    .lesson-figure {height:420px;display:flex;align-items:center;justify-content:center;background:var(--tint);border-radius:10px;padding:12px;box-sizing:border-box;}
+    .lesson-figure img {max-width:100%;max-height:100%;object-fit:contain;display:block;}
+    .lesson-caption {font-size:17px;line-height:1.5;color:var(--muted);margin-top:10px;}
+    .lesson-image-actions {font-size:20px;line-height:1.5;}
+    .lesson-image-actions li {margin-bottom:12px;}
     .cv-date {display:none !important;}
     '''
     d=module.Deck(tenant=data.get('audience','課程教材'),app=data.get('app','學生學習版'),purposes=['操作說明'],
@@ -56,9 +61,20 @@ def build(source,output,*,replace=False,present_skill=None,node=None,previews=No
             previous=page['part']
         if not page.get('prompt') or not page.get('success'): raise ValueError('每個情景需提示詞與完成條件')
         recipient=page.get('prompt_label',data.get('prompt_label','學生貼給自己的 AI'))
-        card_class='lesson-card compact' if page.get('table') else 'lesson-card'
+        card_class='lesson-card compact' if page.get('table') or page.get('image') else 'lesson-card'
         prompt='<div class="'+card_class+'"><div class="lesson-card-head"><span class="lesson-label">範例提示詞</span><span class="lesson-recipient">'+escape(recipient)+'</span></div><div class="lesson-prompt">'+escape(page['prompt'])+'</div></div>'
-        if page.get('table'):
+        if page.get('image'):
+            picture=(ROOT/page['image']).resolve()
+            allowed=(ROOT/'docs/screenshots').resolve()
+            if picture.suffix.lower() not in ('.jpg','.jpeg','.png') or not picture.is_relative_to(allowed):
+                raise ValueError('教材截圖必須來自本 repo 的 docs/screenshots')
+            mime='image/png' if picture.suffix.lower()=='.png' else 'image/jpeg'
+            uri='data:'+mime+';base64,'+base64.b64encode(picture.read_bytes()).decode('ascii')
+            figure='<div class="lesson-figure"><img src="'+uri+'" alt="'+escape(page['title'],quote=True)+'"></div>'
+            figure+='<div class="lesson-caption">'+escape(page.get('image_caption','AI GO 實際畫面節錄；選單依帳號設定顯示。'))+'</div>'
+            actions='<ol class="lesson-actions lesson-image-actions">'+''.join('<li>'+escape(row)+'</li>' for row in page['steps'])+'</ol>'
+            body=d.row(d.col(figure,800),d.col(actions+prompt,550))
+        elif page.get('table'):
             rows=page['table']; body=d.table(rows[0],rows[1:],cls='compact lesson-table')
             body+=prompt
         else:
