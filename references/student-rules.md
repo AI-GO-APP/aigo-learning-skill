@@ -26,6 +26,6 @@
 - R22 課前與費用：課程要求 Claude Pro 以上，或 Codex 搭配 ChatGPT Plus 以上；二選一，每月約 US$20 起，不要求 ChatGPT Pro。外部訂閱與平台內建 AI 用量分開，API 另計費。AI 協助安裝缺少的免費工具及非機密設定，學生不手寫 JSON；付費、升級、全域或系統變更先說明並依授權執行。
 - R23 對外路線：至少做一個內部系統及一個對外 Hosted App。公開前確認本人的 Hosted App id、網址代稱、公開內容與授權，回讀 visibility 及空角色白名單，再測匿名開啟；不把內部 App 或整份資料公開。公開介面不能含平台金鑰，伺服端限制可收欄位及可讀資料。
 - R24 用詞與情景：統一稱普通版／學生學習版；先白話解釋術語。每個情景有範例提示詞、完成條件與遇錯下一步；不拿個別學員錄音背景當通用教材。
-- R25 Hosted 發布：一個 App 一個 repo，依確認範圍經分支、PR、squash merge、Actions 部署。本人把 App 專用 Deploy Token 放 Actions secret；平台帳密不進 GitHub。略過舊 run，核對 /health commit，CI 成功不等於業務流或授權驗收通過。
+- R25 Hosted 發布：repo 組織與部署方法以 Builder 及適用專案規範為準，不由學生學習版另定一套。依確認範圍經分支、PR、squash merge、Actions 部署；平台帳密不進 GitHub，App 專用 Deploy Token 由本人填入。略過舊 run，核對 /health commit，CI 成功不等於業務流或授權驗收通過。
 
 作法衝突時，以適用上層指令與學員明確要求判定；平台技術由 Builder 與實測說明，教學節奏由學生學習版安排，本次資源範圍兩者共同遵守。不要假裝課程規則是平台技術限制。

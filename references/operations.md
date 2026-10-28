@@ -5,7 +5,7 @@
 3. 安裝後 learning_bootstrap.py --workspace <工作區> --prepare-only 保留原內容並加入課程 AGENTS.md／CLAUDE.md 引用。
 4. 助教提供租戶網址、email、群組名稱與 id 後，以 learning_bootstrap.py 建非機密設定；舊工作區用 --upgrade-workspace，不重建 App 或憑證。
 5. 登入照 Builder 支援的方法，優先向新手說明瀏覽器登入；帳密檔也由學員自己填。AI 不讀出憑證、不代填、不放 repo。
-6. 內部 App 在建立介面手動選助教群組，立即回讀；未確認前不匯入、同步、編譯或發布。再用 Builder 登錄實際 id、slug、kind 與明確別名。
+6. 內部 App 建立完成後，立即由學員到存取設定手動選助教提供的專屬群組，隨即回讀；建立表單沒有群組欄位。未確認前不匯入、同步、編譯或發布。再用 Builder 登錄實際 id、slug、kind 與明確別名。
 
 每次寫入前：
 `python <學生學習版>/scripts/learning_scope.py --workspace <工作區> --app <別名> [--kind hosted]`

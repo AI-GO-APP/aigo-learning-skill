@@ -12,7 +12,7 @@
 | 壞了／403／版本不符 | troubleshooting 與必要實測 | 用「預期／實際」說明，分清已知與假設，保留待驗證 |
 | 發布與交付 | Custom／Hosted 的不同流程與實際驗證 | 讓學員知道會影響誰，功能與理解分開記 |
 
-先用 builder_runtime.py 回報的完整路徑讀 Builder SKILL.md，再按本題讀其 references；不用把整套文件一次載入。
+新對話先載入兩個技能入口。純討論可透過客戶端技能載入工具或已安裝路徑唯讀 Builder SKILL.md，再按本題讀其 references；不因此執行更新或登入。實作前再用 builder_runtime.py 核對完整路徑及相容版本；不用把整套文件一次載入。
 CLI 及函式參數以目前 Builder 為準，不把本手冊的白話文字當成固定 API。
 
 ## 優先原則
