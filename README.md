@@ -1,5 +1,10 @@
 # AI GO 學生學習版：Builder 的教學引導層
 
+## 安裝 AI 的第一回合：先停在資料夾確認
+
+使用者貼下方短提示時，第一回合只做唯讀預檢：讀取這份 README、回報目前完整工作區路徑及既有工具／小幫手概況，問學生「這就是你要放作業的資料夾嗎？」然後結束本回合，等待回答。
+**收到學生明確確認這個完整路徑前，不下載安裝包、不解壓、不安裝工具、不建立或修改任何檔案。**「學生已從資料夾開啟對話」或「資料夾名稱正確」不能代替確認；也不能一面提問一面繼續安裝。
+
 本 repo 是 **aigo-learning**，必須搭配 [aigo-builder](https://github.com/AI-GO-APP/aigo-app-builder-skill) 使用。
 Builder 管技術、使用、串接與開發部署；學生學習版加白話說明、小練習、提示與理解驗收。無須安裝 aigo-client-collab。
 
@@ -16,7 +21,8 @@ Builder 管技術、使用、串接與開發部署；學生學習版加白話說
 3. 預設專案安裝，不擅改全域設定。Builder repo 是公開的，來源為 AI-GO-APP/aigo-app-builder-skill；依選用工具安裝到有效技能位置。用 skills CLI 時不帶 -g，例：`npx skills add AI-GO-APP/aigo-app-builder-skill -y -a claude-code`，Codex 將 agent 換成 `codex`。已有安裝先核對，工具缺少時先說明如何補齊。
 4. 學生學習版從最新穩定 release 下載 `aigo-learning-<版本>.zip`、SHA256SUMS；驗證 ZIP／PDF 雜湊及解壓後 PACKAGE 清單。Claude Code 放 `.claude/skills/aigo-learning/`，Codex 放 `.agents/skills/aigo-learning/`；不要再多包一層目錄。此包不含 Builder 技術副本。
 5. 用 `python <學生學習版>/scripts/builder_runtime.py --workspace <工作區>` 核對 Builder 路徑與版本。用 `learning_bootstrap.py --workspace <工作區> --prepare-only` 建立或更新受管理的課程區塊及 CLAUDE.md 引用；保留區塊外原內容，舊工作區也適用。
-6. 開新對話：直接描述目標；本資料夾固定使用學生學習版並搭配 Builder，不必每次輸入技能指令。依手冊取得助教提供的空間、email、群組名稱及 id，再建立非機密設定與登入。安裝本身不授權登入／建立／發布 App。
+6. 安裝完先讀取已安裝的 SKILL.md、references/onboarding.md 及 capabilities.md，核對兩個技能的路徑與版本，再教學生從同一資料夾開新對話、直接描述目標，不必輸入技能指令。
+7. 開通卡通常隨開通提供：先請學生找既有卡片，或讀已存在的非機密設定；確實未提供才向原開通人員補齊。**沒有開通卡也可以先導覽功能、選題、討論需求及做本機原型，不能把拿齊資料當成開始學習的前提。**登入或建立平台作品時才需要完整開通資料。安裝本身不授權登入／建立／發布 App。
 
 ## 從 0.3.x 升級
 
